@@ -1,5 +1,7 @@
 # Unreleased
 
+# 1.9.0 - 2026-09-23
+
 New neat features with this release!
 
 And a reminder: *eilmeldung* is still **hand-crafted**!
