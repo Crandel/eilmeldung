@@ -738,7 +738,7 @@ impl crate::messages::MessageReceiver for ArticlesList {
                     view_needs_update = true;
                 }
 
-                MouseArticleClick(row_offset) => {
+                MouseArticleSelect(row_offset) => {
                     // Select the article at the clicked row offset
                     let offset = self.view_data.get_table_state_mut().offset();
                     let target_index = offset + *row_offset as usize;
@@ -748,17 +748,6 @@ impl crate::messages::MessageReceiver for ArticlesList {
                             .select(Some(target_index));
                         self.select_index_and_send_message(None)?;
                     }
-                }
-
-                MouseScrollDown(Panel::ArticleList) => {
-                    let offset = self.view_data.get_table_state_mut().offset_mut();
-                    let max = self.model_data.articles().len().saturating_sub(1);
-                    *offset = (*offset).saturating_add(1).min(max);
-                }
-
-                MouseScrollUp(Panel::ArticleList) => {
-                    let offset = self.view_data.get_table_state_mut().offset_mut();
-                    *offset = (*offset).saturating_sub(1);
                 }
 
                 ConfigReloaded(config) => {

@@ -6,6 +6,7 @@ mod feed_list_content_identfier;
 mod icon_set;
 mod input_config;
 mod login_configuration;
+mod mouse;
 mod paths;
 mod share_target;
 mod sync_stats;
@@ -14,6 +15,14 @@ mod theme;
 use std::path::Path;
 
 use crate::prelude::*;
+
+// a macro for pleasure for defining mappings in TOML syntax
+macro_rules! toml_mappings {
+    [$($key_seq:literal = [$($command_seq:literal),*])*] => {
+        vec![$(($key_seq.into(), [$(Command::parse($command_seq, false).unwrap()),*].into()),)*].into_iter().collect()
+    };
+}
+pub(crate) use toml_mappings;
 
 pub mod prelude {
     pub use super::base16_theme::{
@@ -28,6 +37,7 @@ pub mod prelude {
     pub use super::icon_set::IconSet;
     pub use super::input_config::InputConfig;
     pub use super::login_configuration::LoginConfiguration;
+    pub use super::mouse::MouseConfig;
     pub use super::paths::{CONFIG_FILE, PROJECT_DIRS};
     pub use super::share_target::ShareTarget;
     pub use super::sync_stats::SyncStatsOutputFormat;
@@ -35,12 +45,7 @@ pub mod prelude {
     pub use super::{ArticleContentType, ArticleScope, Config, ConfigError};
 }
 
-use log::{info, warn};
 use once_cell::sync::Lazy;
-use ratatui::crossterm::{
-    event::{DisableMouseCapture, EnableMouseCapture},
-    execute,
-};
 
 static HINT_CHARS: Lazy<Vec<char>> = Lazy::new(|| vec!['F', 'J', 'G', 'H', 'D', 'K']);
 static HINT_NUMBERS: Lazy<Vec<char>> =
@@ -143,6 +148,7 @@ impl ArticleScope {
 #[serde(default, deny_unknown_fields)]
 pub struct Config {
     pub input_config: InputConfig,
+    pub mouse_config: MouseConfig,
     pub theme: Theme,
     pub icon_set: IconSet,
     pub border_theme: BorderTheme,
@@ -159,8 +165,6 @@ pub struct Config {
     pub notify_after_sync: bool,
     pub notify_after_sync_cmd: Option<String>,
     pub notify_after_sync_stats_format: SyncStatsOutputFormat,
-
-    pub mouse_support: bool,
 
     pub auto_reload_config: bool,
 
@@ -216,17 +220,13 @@ pub struct Config {
     pub cli_sync_stats_format: SyncStatsOutputFormat,
 
     // DEPRECATED
-    pub show_top_bar: Option<bool>,
-    pub scrollbar_begin_symbol: Option<char>,
-    pub scrollbar_end_symbol: Option<char>,
-    pub scrollbar_track_symbol: Option<char>,
-    pub scrollbar_thumb_symbol: Option<char>,
+    pub mouse_support: Option<bool>,
 }
 
 macro_rules! deprecated {
     ($name:expr) => {
         if $name.is_some() {
-            warn!(
+            log::warn!(
                 "configuration setting {} is deprecated and will be removed in future versions",
                 stringify!($name).strip_prefix("self.").unwrap() // for this I should burn in hell
             )
@@ -236,7 +236,8 @@ macro_rules! deprecated {
 
 impl Config {
     pub async fn validate(&mut self, config_dir: &Path) -> color_eyre::Result<()> {
-        self.validate_input_config().await?;
+        self.input_config.validate().await?;
+        self.mouse_config.validate().await?;
 
         if let Some(sync_interval) = self.sync_every_minutes
             && sync_interval == 0
@@ -246,46 +247,10 @@ impl Config {
             ));
         }
 
-        if let Err(error) = if self.mouse_support {
-            info!("Enabling mouse capture");
-            execute!(std::io::stdout(), EnableMouseCapture)
-        } else {
-            info!("Disabling mouse capture");
-            execute!(std::io::stdout(), DisableMouseCapture)
-        } {
-            log::error!("{error}");
-        }
-
         self.theme.validate(&config_dir.join("themes/")).await?;
+        self.input_config.validate().await?;
 
-        deprecated!(self.show_top_bar);
-        deprecated!(self.scrollbar_begin_symbol);
-        deprecated!(self.scrollbar_end_symbol);
-        deprecated!(self.scrollbar_track_symbol);
-        deprecated!(self.scrollbar_thumb_symbol);
-
-        Ok(())
-    }
-
-    async fn validate_input_config(&mut self) -> color_eyre::Result<()> {
-        Self::default()
-            .input_config
-            .mappings
-            .into_iter()
-            .for_each(|(key_seq, cmd_seq)| {
-                self.input_config.mappings.entry(key_seq).or_insert(cmd_seq);
-            });
-
-        self.input_config
-            .mappings
-            .iter()
-            .filter_map(|(key_seq, command_seq)| command_seq.commands.is_empty().then_some(key_seq))
-            .cloned()
-            .collect::<Vec<KeySequence>>()
-            .into_iter()
-            .for_each(|key| {
-                self.input_config.mappings.shift_remove(&key);
-            });
+        deprecated!(self.mouse_support);
 
         Ok(())
     }
@@ -323,6 +288,7 @@ impl Default for Config {
             icon_set: Default::default(),
             border_theme: Default::default(),
             input_config: Default::default(),
+            mouse_config: Default::default(),
             article_scope: ArticleScope::Unread,
             feed_list_scope: ArticleScope::All,
 
@@ -386,14 +352,9 @@ impl Default for Config {
                 ShareTarget::Telegram,
             ],
             login_setup: None,
-            mouse_support: false,
 
             // DEPRECATED
-            show_top_bar: None,
-            scrollbar_begin_symbol: None,
-            scrollbar_end_symbol: None,
-            scrollbar_track_symbol: None,
-            scrollbar_thumb_symbol: None,
+            mouse_support: None,
         }
     }
 }
