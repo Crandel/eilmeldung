@@ -1,21 +1,24 @@
 use std::{collections::HashMap, process::ExitStatus, sync::Arc};
 
 use news_flash::{
+    DiscoverResult,
     error::NewsFlashError,
     models::{ArticleID, Category, FatArticle, Feed, FeedID, Tag, Thumbnail},
 };
-use ratatui::text::Text;
 use ratatui_image::picker::Picker;
 
 use crate::prelude::*;
 
 #[derive(thiserror::Error, Debug)]
 pub enum AsyncOperationError {
-    #[error("news flash error")]
+    #[error("news flash error: #1")]
     NewsFlashError(#[from] NewsFlashError),
 
     #[error("error report")]
     Report(#[from] color_eyre::Report),
+
+    #[error("feed parse error: #1")]
+    FeedParseError(#[from] news_flash::error::FeedParserError),
 }
 
 #[derive(Debug)]
@@ -24,7 +27,7 @@ pub enum Event {
     ArticleSelected(Option<ArticleID>),
 
     AsyncSync,
-    AsyncSyncFinished(HashMap<FeedID, i64>),
+    AsyncSyncFinished(HashMap<FeedID, Vec<ArticleID>>),
 
     AsyncArticleThumbnailFetch,
     AsyncArticleThumbnailFetchFinished(Option<Thumbnail>),
@@ -53,8 +56,13 @@ pub enum Event {
     AsyncFeedAdd,
     AsyncFeedAddFinished(Feed),
 
+    AsyncDiscoverFeeds,
+    AsyncDiscoverFeedsFinished(Option<String>, DiscoverResult),
+
+    FeedSelected(Option<String>, Feed),
+
     AsyncFeedFetch,
-    AsyncFeedFetchFinished(FeedID, i64),
+    AsyncFeedFetchFinished(FeedID, Vec<ArticleID>),
 
     AsyncCategoryAdd,
     AsyncCategoryAddFinished(Category),
@@ -117,10 +125,8 @@ pub enum Event {
     // messaging/status
     Tooltip(Tooltip<'static>),
 
-    // help popup
-    ShowHelpPopup(String, Text<'static>),
-    ShowModalHelpPopup(String, Text<'static>),
-    HideHelpPopup,
+    // popup related events
+    Popup(PopupEvent),
 
     // application
     ApplicationStarted,
