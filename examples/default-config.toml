@@ -23,13 +23,13 @@ auto_reload_config = true
 
 # Labels
 feeds_label = "{icon} All {unread_count}"
+feed_label = "{icon} {label} {unread_count}"
 last_synced_label = "{icon} Last Synced"
-feed_label = " {label} {unread_count}"
 category_label = "{icon} {label} {unread_count}"
 categories_label = "{icon} Categories {unread_count}"
 tags_label = "{icon} Tags {unread_count}"
-tag_label = "{icon} {label} {unread_count}"
-query_label = "{icon} {label} {unread_count}"
+tag_label = "{icon} {label} {unread_count/}{count:0}"
+query_label = "{icon} {label} {unread_count/}{count:0}"
 
 # Article Display
 article_table = "{flagged},{read},{marked},{tag_icons},{age},{title}"
