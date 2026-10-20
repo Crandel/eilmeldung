@@ -1,5 +1,7 @@
 # Unreleased
 
+# 1.9.1 - 2026-10-20
+
 - commands `up` and `down` now accept (optional) amount to navigate up/down
   - use this for faster navigation, e.g., `input_config.mappings.">" = ["down 2"]`
   - use this for faster mouse scrolling, e.g., `mouse_config.content_mappings.scroll_down = ["in content down 2"]`
