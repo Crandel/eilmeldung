@@ -23,10 +23,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            openssl \
-            pkg-config \
-            libxml2-dev \
-            libsqlite3-dev \
             llvm \
             clang
 
@@ -79,10 +75,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            openssl \
-            pkg-config \
-            libxml2-dev \
-            libsqlite3-dev \
             llvm \
             clang
 
@@ -180,10 +172,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            openssl \
             pkg-config \
-            libxml2-dev \
-            libsqlite3-dev \
             llvm \
             clang
 

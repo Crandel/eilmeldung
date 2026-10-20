@@ -23,10 +23,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            openssl \
-            pkg-config \
-            libxml2-dev \
-            libsqlite3-dev \
             llvm \
             clang
 
@@ -79,10 +75,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            openssl \
-            pkg-config \
-            libxml2-dev \
-            libsqlite3-dev \
             llvm \
             clang
 
@@ -182,10 +174,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            openssl \
-            pkg-config \
-            libxml2-dev \
-            libsqlite3-dev \
             llvm \
             clang
 
@@ -299,7 +287,6 @@ jobs:
           PKG_CONFIG_PATH: C:\vcpkg\installed\x64-windows-static\lib\pkgconfig
           CMAKE_TOOLCHAIN_FILE: C:\vcpkg\scripts\buildsystems\vcpkg.cmake
           VCPKG_TARGET_TRIPLET: x64-windows-static
-          OPENSSL_SRC_PERL: C:\Strawberry\perl\bin\perl.exe
 
       - name: Create package directory
         run: |
@@ -335,10 +322,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            openssl \
-            pkg-config \
-            libxml2-dev \
-            libsqlite3-dev \
             llvm \
             clang
 
