@@ -68,6 +68,7 @@ feed_list = [
   "tags",
 ]
 feed_list_query_compute_unread = true
+# tag_force_scope is not set by default
 
 # Enclosures
 enclosure_command = "xdg-open {url}"
@@ -339,6 +340,7 @@ highlighted = { fg = "highlight", mods = ["italic"] }
 flagged = { fg = "flagged" }
 unread_count = { mods = ["italic"] }
 marked_count = { mods = ["italic"] }
+count = { mods = ["italic"] }
 
 [theme.base16_dark]
 background = "base00"

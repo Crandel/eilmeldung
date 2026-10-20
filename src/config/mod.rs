@@ -213,6 +213,8 @@ pub struct Config {
     pub feed_list: Vec<FeedListContentIdentifier>,
     pub feed_list_query_compute_unread: bool,
 
+    pub tag_force_scope: Option<ArticleScope>,
+
     pub share_targets: Vec<ShareTarget>,
 
     pub login_setup: Option<LoginConfiguration>,
@@ -280,8 +282,8 @@ impl Default for Config {
             category_label: "{icon} {label} {unread_count}".into(),
             categories_label: "{icon} Categories {unread_count}".into(),
             tags_label: "{icon} Tags {unread_count}".into(),
-            tag_label: "{icon} {label} {unread_count}".into(),
-            query_label: "{icon} {label} {unread_count}".into(),
+            tag_label: "{icon} {label} {unread_count/}{count:0}".into(),
+            query_label: "{icon} {label} {unread_count/}{count:0}".into(),
             article_table: "{flagged},{read},{marked},{tag_icons},{age},{title}".into(),
             date_format: "%m/%d %H:%M".into(),
             theme: Default::default(),
@@ -342,7 +344,9 @@ impl Default for Config {
                 FeedListContentIdentifier::Categories(FeedListItemType::List),
                 FeedListContentIdentifier::Tags(FeedListItemType::Tree),
             ],
+
             feed_list_query_compute_unread: true,
+            tag_force_scope: None,
 
             share_targets: vec![
                 ShareTarget::Clipboard,

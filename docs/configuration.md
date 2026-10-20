@@ -1,4 +1,62 @@
 # Configuration 
+- [Configuration](#configuration)
+  * [Table of Contents](#table-of-contents)
+  * [Location of Configuration Files](#location-of-configuration-files)
+    + [eilmeldung Configuration File](#eilmeldung-configuration-file)
+    + [news-flash State Files](#news-flash-state-files)
+  * [Reloading the Configuration](#reloading-the-configuration)
+  * [List of Configuration Options](#list-of-configuration-options)
+    + [Feed List Label Placeholders](#feed-list-label-placeholders)
+    + [Article Table Columns](#article-table-columns)
+    + [Dimension](#dimension)
+  * [Startup Commands](#startup-commands)
+  * [Default Sort Order](#default-sort-order)
+  * [Keyboard Input Configuration](#keyboard-input-configuration)
+    + [General Keyboard Input Settings](#general-keyboard-input-settings)
+    + [Keybinding Customization](#keybinding-customization)
+      - [Modifier Keys](#modifier-keys)
+      - [Special Keys](#special-keys)
+  * [Mouse Input Configuration](#mouse-input-configuration)
+    + [General Mouse Input Settings](#general-mouse-input-settings)
+    + [Mouse Input Customization](#mouse-input-customization)
+      - [Mouse Input Events](#mouse-input-events)
+      - [Command Sequences](#command-sequences)
+  * [Theme Configuration](#theme-configuration)
+    + [Base16 Themes](#base16-themes)
+      - [Setting a Base16 Theme](#setting-a-base16-theme)
+      - [Custom Base16 Themes](#custom-base16-themes)
+    + [Color Palette](#color-palette)
+    + [Component Styles](#component-styles)
+    + [Component Style Modifiers](#component-style-modifiers)
+    + [Base16 Color Mapping](#base16-color-mapping)
+  * [Border Theme](#border-theme)
+- [Icon Set](#icon-set)
+  * [Core UI Icons](#core-ui-icons)
+  * [Feed and List Labels](#feed-and-list-labels)
+  * [Sorting and Filtering](#sorting-and-filtering)
+  * [Batch Operations](#batch-operations)
+  * [Status Bar](#status-bar)
+  * [Feed List Configuration](#feed-list-configuration)
+  * [After-Sync Commands](#after-sync-commands)
+    + [Example: Marking Paywall/Ad Articles as Read](#example-marking-paywallad-articles-as-read)
+    + [Example: Automatic Tagging](#example-automatic-tagging)
+    + [Example: Expand Categories with Unread Articles](#example-expand-categories-with-unread-articles)
+    + [Example: Chain of Operations](#example-chain-of-operations)
+  * [Notify After Sync](#notify-after-sync)
+    + [Notification Format](#notification-format)
+    + [Notify Command](#notify-command)
+  * [Share Target Configuration](#share-target-configuration)
+  * [Opening Enclosures](#opening-enclosures)
+  * [Layout Configuration](#layout-configuration)
+    + [Example: Static Layout (default)](#example-static-layout-default)
+    + [Example: Dynamic Layout](#example-dynamic-layout)
+    + [Example: Fully Dynamic Layout](#example-fully-dynamic-layout)
+  * [Automatic Login](#automatic-login)
+    + [Secrets](#secrets)
+      - [Notes on secrets under Windows](#notes-on-secrets-under-windows)
+    + [Finding the Right Settings](#finding-the-right-settings)
+  * [CLI Options](#cli-options)
+  * [Variable Expansion](#variable-expansion)
 
  **Important**: You don't need a `config.toml` file. If you don't provide your own `config.toml` *eilmeldung* uses sensible defaults. If you are interested in what these defaults are, you can consult `examples/default-config.toml`.
 
@@ -14,6 +72,10 @@
   - [eilmeldung Configuration File](#eilmeldung-configuration-file)
   - [news-flash State Files](#news-flash-state-files)
 - [List of Configuration Options](#list-of-configuration-options)
+  - [Feed List Label Placeholders](#Feed List Label Placeholders)
+  - [Article Table Columns]
+  - [Dimension]
+
 - [Default Sort Order](#default-sort-order)
 - [Keyboard Input Configuration](#keyboard-input-configuration)
   - [General Keyboard Input Settings](#general-keyboard-input-settings)
@@ -97,80 +159,119 @@ Afterwards, auto-reloading should work.
 ## List of Configuration Options
 
 
-| Option                            | Type                  | Description                                                                                                                                                        |
-| --------                          | ------                | -------------                                                                                                                                                      |
-| `auto_reload_config`              | boolean               | auto-reload the config file on change (default is `true`); see also [Reloading the Configuration](#reloading-the-configuration)                                    |
-| `startup_commands`                | list                  | list of commands to execute on startup, e.g., `startup_commands = ["sync", "focus articles"]`                                                                      |
-| `refresh_fps`                     | integer               | UI refresh rate in frames per second                                                                                                                               |
-| `network_timeout_seconds`         | integer               | timeout for network operations                                                                                                                                     |
-| `mouse_support`                   | bool                  | Enable mouse support, default is `false`                                                                                                                           |
-| `article_scope`                   | string                | Default article scope: `"all"`, `"unread"`, or `"marked"`                                                                                                          |
-| `feed_list_scope`                 | string                | Default feed list scope: `"all"`, `"unread"`, or `"marked"`                                                                                                        |
-| `default_sort_order`              | string (sort order)   | Default sort order for articles: e.g., `"<date"` (newest first), `">date"` (oldest first), `"feed date"` (see [Commands](commands.md#sorting-articles) for syntax) |
-| `hide_default_sort_order`         | boolean               | If true, hides the sort order if the default sort order is applied; otherwise always show sort order                                                               |
-| `zen_mode_show_header`            | boolean               | Show header in distraction-free (zen) mode                                                                                                                         |
-| `keep_articles_days`              | integer               | amount of days before articles are removed                                                                                                                         |
-| `sync_every_minutes`              | integer (optional)    | Interval in minutes for automatic feed sync (disabled if omitted, must be >0 if set)                                                                               |
-| `after_sync_commands`             | list                  | List of commands to execute after a sync has finished, e.g., `after_sync_commands = ["query lastsync", "tag rust title:rust", "refresh"]`                          |
-| `notify_after_sync`               | boolean               | If true, notifies the user about newly synced articles (see [Notify After Sync](#notify-after-sync))                                                               |
-| `notify_after_sync_cmd`           | string or none        | If defined, (shell) command which is executed after a sync, e.g., `"notify-send \"{summary}\" \"{body}\"` (see [Notify After Sync](#notify-after-sync))            |
-| `notify_after_sync_stats_format`  | sync stats definition | Format of sync stats (see [Notify After Sync](#notify-after-sync))                                                                                                 |
-| `cli_sync_stats_format`           | sync stats definition | Format of sync stats for `--sync` CLI option (see [CLI Arguments](cli_args.md))                                                                                    |
-| ~`show_top_bar`~                  | boolean               | **deprecated**, will be removed in future versions                                                                                                                 |
-| ~`scrollbar_begin_symbol`~        | char                  | **deprecated**, will be removed in future version                                                                                                                  |
-| ~`scrollbar_end_symbol`~          | char                  | **deprecated**, will be removed in future version                                                                                                                  |
-| ~`scrollbar_thumb_symbol`~        | char                  | **deprecated**, will be removed in future version                                                                                                                  |
-| ~`scrollbar_track_symbol`~        | char                  | **deprecated**, will be removed in future version                                                                                                                  |
-| `feeds_label`                     | string                | format for parent of feeds                                                                                                                                         |
-| ~`all_label`~                     | string                | **renamed** to `feeds_label`                                                                                                                                       |
-| `last_synced_label`               | string                | Label format for "Last Synced" query items in feed list                                                                                                            |
-| `feed_label`                      | string                | Label format for a single feed                                                                                                                                     |
-| `categories_label`                | string                | Label format for parent of categories                                                                                                                              |
-| `category_label`                  | string                | Label format for a single category                                                                                                                                 |
-| `tags_label`                      | string                | Label format for parent of tags                                                                                                                                    |
-| `tag_label`                       | string                | Label format for a single tag                                                                                                                                      |
-| `query_label`                     | string                | Label format for query items                                                                                                                                       |
-| `article_table`                   | string                | Article list column format                                                                                                                                         |
-| `date_format`                     | string                | Date format (strftime syntax)                                                                                                                                      |
-| `articles_after_selection`        | integer               | Number of articles to show after selection                                                                                                                         |
-| `auto_scrape`                     | boolean               | Automatically scrape full article content when viewing an article in the content panel                                                                             |
-| `shadows`                         | boolean               | Show shadows (for popups)                                                                                                                                          |
-| `thumbnail_show`                  | boolean               | Show article thumbnails                                                                                                                                            |
-| `thumbnail_width`                 | dimension             | Width of region reserved for thumbnail                                                                                                                             |
-| `thumbnail_height`                | dimension             | Height of region reserved for thumbnail                                                                                                                            |
-| `thumbnail_resize`                | boolean               | Resize thumbnails to fit reserved space (may impact performance)                                                                                                   |
-| `thumbnail_fetch_debounce_millis` | integer               | Delay before fetching thumbnail (ms)                                                                                                                               |
-| `article_list_show_position`      | boolean               | Show position indicator in article list (top right)                                                                                                                |
-| `content_show_position`           | boolean               | Show position indicator in article content (bottom right)                                                                                                          |
-| `text_max_width`                  | integer               | Maximum text width for article content                                                                                                                             |
-| `content_preferred_type`          | string                | Preferred content type: `"plain_text"` or `"markdown"`                                                                                                             |
-| `feed_list_focused_width`         | dimension             | Width of feed list when focused                                                                                                                                    |
-| `article_list_focused_width`      | dimension             | Width of article list when focused                                                                                                                                 |
-| `article_list_focused_height`     | dimension             | Height of article list when focused                                                                                                                                |
-| `article_content_focused_height`  | dimension             | Height of article content when focused                                                                                                                             |
-| `feed_list_query_compute_unread`  | boolean               | If `true`, computes the amount of unread items in a query; note: this may cause a slowdown if you have many queries (set `false` to not compute the unread count)  |
-| `enclosure_command`               | string                | Command with which enclosure URLs are opened (see [Opening Enclosures](opening-enclosures))                                                                        |
-| `video_enclosure_command`         | string (optional)     | Command with which video enclosure URLs are opened (see [Opening Enclosures](opening-enclosures))                                                                  |
-| `audio_enclosure_command`         | string (optional)     | Command with which audio enclosure URLs are opened (see [Opening Enclosures](opening-enclosures))                                                                  |
-| `image_enclosure_command`         | string (optional)     | Command with which image enclosure URLs are opened (see [Opening Enclosures](opening-enclosures))                                                                  |
-| `content_show_urls`               | boolean               | If `true`, URLs are shown for links/images when displaying the content of an article                                                                               |
-| `hint_type`                       | string                | If `letters`, letters are used for link hints in the article content display. If `numbers`, numbers are used.                                                      |
+| Option                            | Type                  | Description                                                                                                                                                           |
+| --------                          | ------                | -------------                                                                                                                                                         |
+| `auto_reload_config`              | boolean               | auto-reload the config file on change (default is `true`); see also [Reloading the Configuration](#reloading-the-configuration)                                       |
+| `startup_commands`                | list                  | list of commands to execute on startup, e.g., `startup_commands = ["sync", "focus articles"]`                                                                         |
+| `refresh_fps`                     | integer               | UI refresh rate in frames per second                                                                                                                                  |
+| `network_timeout_seconds`         | integer               | timeout for network operations                                                                                                                                        |
+| `mouse_support`                   | bool                  | Enable mouse support, default is `false`                                                                                                                              |
+| `article_scope`                   | string                | Default article scope: `"all"`, `"unread"`, or `"marked"`                                                                                                             |
+| `feed_list_scope`                 | string                | Default feed list scope: `"all"`, `"unread"`, or `"marked"`                                                                                                           |
+| `default_sort_order`              | string (sort order)   | Default sort order for articles: e.g., `"<date"` (newest first), `">date"` (oldest first), `"feed date"` (see [Commands](commands.md#sorting-articles) for syntax)    |
+| `hide_default_sort_order`         | boolean               | If true, hides the sort order if the default sort order is applied; otherwise always show sort order                                                                  |
+| `zen_mode_show_header`            | boolean               | Show header in distraction-free (zen) mode                                                                                                                            |
+| `keep_articles_days`              | integer               | amount of days before articles are removed (see to `0` to **never** remove)                                                                                           |
+| `sync_every_minutes`              | integer (optional)    | Interval in minutes for automatic feed sync (disabled if omitted, must be >0 if set)                                                                                  |
+| `after_sync_commands`             | list                  | List of commands to execute after a sync has finished, e.g., `after_sync_commands = ["query lastsync", "tag rust title:rust", "refresh"]`                             |
+| `notify_after_sync`               | boolean               | If true, notifies the user about newly synced articles (see [Notify After Sync](#notify-after-sync))                                                                  |
+| `notify_after_sync_cmd`           | string or none        | If defined, (shell) command which is executed after a sync, e.g., `"notify-send \"{summary}\" \"{body}\"` (see [Notify After Sync](#notify-after-sync))               |
+| `notify_after_sync_stats_format`  | sync stats definition | Format of sync stats (see [Notify After Sync](#notify-after-sync))                                                                                                    |
+| `cli_sync_stats_format`           | sync stats definition | Format of sync stats for `--sync` CLI option (see [CLI Arguments](cli_args.md))                                                                                       |
+| ~`show_top_bar`~                  | boolean               | **deprecated**, will be removed in future versions                                                                                                                    |
+| ~`scrollbar_begin_symbol`~        | char                  | **deprecated**, will be removed in future version                                                                                                                     |
+| ~`scrollbar_end_symbol`~          | char                  | **deprecated**, will be removed in future version                                                                                                                     |
+| ~`scrollbar_thumb_symbol`~        | char                  | **deprecated**, will be removed in future version                                                                                                                     |
+| ~`scrollbar_track_symbol`~        | char                  | **deprecated**, will be removed in future version                                                                                                                     |
+| `feeds_label`                     | string                | format for parent of feeds                                                                                                                                            |
+| ~`all_label`~                     | string                | **renamed** to `feeds_label`                                                                                                                                          |
+| `last_synced_label`               | string                | Label format for "Last Synced" query items in feed list                                                                                                               |
+| `feed_label`                      | string                | Label format for a single feed                                                                                                                                        |
+| `categories_label`                | string                | Label format for parent of categories                                                                                                                                 |
+| `category_label`                  | string                | Label format for a single category                                                                                                                                    |
+| `tags_label`                      | string                | Label format for parent of tags                                                                                                                                       |
+| `tag_label`                       | string                | Label format for a single tag                                                                                                                                         |
+| `query_label`                     | string                | Label format for query items                                                                                                                                          |
+| `article_table`                   | string                | Article list column format                                                                                                                                            |
+| `date_format`                     | string                | Date format (strftime syntax)                                                                                                                                         |
+| `articles_after_selection`        | integer               | Number of articles to show after selection                                                                                                                            |
+| `auto_scrape`                     | boolean               | Automatically scrape full article content when viewing an article in the content panel                                                                                |
+| `shadows`                         | boolean               | Show shadows (for popups)                                                                                                                                             |
+| `thumbnail_show`                  | boolean               | Show article thumbnails                                                                                                                                               |
+| `thumbnail_width`                 | dimension             | Width of region reserved for thumbnail                                                                                                                                |
+| `thumbnail_height`                | dimension             | Height of region reserved for thumbnail                                                                                                                               |
+| `thumbnail_resize`                | boolean               | Resize thumbnails to fit reserved space (may impact performance)                                                                                                      |
+| `thumbnail_fetch_debounce_millis` | integer               | Delay before fetching thumbnail (ms)                                                                                                                                  |
+| `article_list_show_position`      | boolean               | Show position indicator in article list (top right)                                                                                                                   |
+| `content_show_position`           | boolean               | Show position indicator in article content (bottom right)                                                                                                             |
+| `text_max_width`                  | integer               | Maximum text width for article content                                                                                                                                |
+| `content_preferred_type`          | string                | Preferred content type: `"plain_text"` or `"markdown"`                                                                                                                |
+| `feed_list_focused_width`         | dimension             | Width of feed list when focused                                                                                                                                       |
+| `article_list_focused_width`      | dimension             | Width of article list when focused                                                                                                                                    |
+| `article_list_focused_height`     | dimension             | Height of article list when focused                                                                                                                                   |
+| `article_content_focused_height`  | dimension             | Height of article content when focused                                                                                                                                |
+| `feed_list_query_compute_unread`  | boolean               | If `true`, computes the amount of unread items in a query; note: this may cause a slowdown if you have many queries (set `false` to not compute the unread count)     |
+| `enclosure_command`               | string                | Command with which enclosure URLs are opened (see [Opening Enclosures](opening-enclosures))                                                                           |
+| `video_enclosure_command`         | string (optional)     | Command with which video enclosure URLs are opened (see [Opening Enclosures](opening-enclosures))                                                                     |
+| `audio_enclosure_command`         | string (optional)     | Command with which audio enclosure URLs are opened (see [Opening Enclosures](opening-enclosures))                                                                     |
+| `image_enclosure_command`         | string (optional)     | Command with which image enclosure URLs are opened (see [Opening Enclosures](opening-enclosures))                                                                     |
+| `content_show_urls`               | boolean               | If `true`, URLs are shown for links/images when displaying the content of an article                                                                                  |
+| `hint_type`                       | string                | If `letters`, letters are used for link hints in the article content display. If `numbers`, numbers are used.                                                         |
+| `tag_force_scope`                 | string (optional)     | If set to `all`, `unread` or `marked`, article list will show either only `all`, `unread` or `marked` articles; if not set, the article scope is selected by the user |
 
 
+### Feed List Label Placeholders 
 
-**Label Placeholders:**
-- `{icon}`: Icon (see [Icon Set](#icon-set))
-- `{label}`: Item name
-- `{unread_count}`: Number of unread articles
+The formatting of the elements in the feed list (tree) is freely customizable via placeholders, for example:
 
-**Article Table Columns:**
+```toml
+feed_label = "{icon} {label} {unread_count}"
+
+```
+
+- `{icon}` is replaced by the icon (which is also configurable)
+- `{label}` is replaced by the label of the feed
+- `{unread_count}` is replaced by the number of unread elements in the feed; if the number of unread elements is 0, an empty string is inserted
+
+The following values are available:
+
+- `icon`: Icon (see [Icon Set](#icon-set))
+- `label`: Item name
+- `unread_count`: Number of unread articles
+- `marked_count`: Number of marked articles (only for feeds and categories)
+- `count`: Total number of articles (only for queries and tags)
+
+There even more ways to customize what is printed:
+
+- The exact formatting within the `{}`s can be adjusted, e.g., `{(unread_count)}` prints the unread count in parentheses. 
+- By default, if the numerical count value  (`unread_count`, `marked_count`, `count`) is 0, nothing is inserted. You can overwrite this behavior by using `:`, e.g, `{(count):-}` is replaced by `-` if `count` is 0. Use `{...:0}` to display `0` if the numerical value is 0.
+
+A more complex example is:
+
+```toml
+tag_label = "{icon} {label} {unread_count/}{count:0}"
+```
+
+Which shows the icon and label (tag name) and the amount of unread elements but only if there is at least one, and then the amount of articles with this tag or `0` if there is none.
+
+
+**Note**: You cannot use `{`, `}` or `:` within the placeholders.
+
+
+### Article Table Columns
+
+The article table columns can be adjusted by using the following placeholders:
+
 - `{read}`: Read/unread icon
 - `{marked}`: Marked/unmarked icon
 - `{tag_icons}`: Tag icons
 - `{age}`: Article age/date
 - `{title}`: Article title
 
-**Dimension:** Is a string:
+### Dimension
+
+The width/height of the panels is defined by a dimension value which is a string:
+
 - **Percentage**: `"n%"` where `n` is a number from 1 to 100, e.g., `"33%"`, meaning 33% of the available width/height
 - **Length**: `"n length"` where `n` is a positive integer, e.g., `"10 length"`, meaning 10 rows (height)  or 10 columns (width)
 
@@ -529,8 +630,10 @@ The following component styles are *modifiers* which are applied depending on th
 | `read`         | `none`      | `none` | `dim`      | Read articles or items with only read articles               |
 | `selected`     | `none`      | `none` | `reversed` | Selected items (e.g., in feed or article list)               |
 | `highlighted`  | `highlight` | `none` | `none`     | Highlighted items (e.g., articles matching the search query) |
-| `unread_count` | `none`      | `none` | `italic`   | Unread count label (shown right of item)                     |
-| `marked_count` | `none`      | `none` | `italic`   | Marked count label (shown right of item)                     |
+| `unread_count` | `none`      | `none` | `italic`   | Unread count label                      |
+| `marked_count` | `none`      | `none` | `italic`   | Marked count label                      |
+| `count` | `none`      | `none` | `italic`   | Count label                      |
+
 
 **Note**: These modifiers are applied *additively* to the other component styles, e.g., for an *unread article* the component style `article` is overwritten with all defined attributes of the `unread` component style.
 
