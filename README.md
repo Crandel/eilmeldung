@@ -158,7 +158,8 @@ Of course, there are many awesome alternatives to *eilmeldung*. Check them out!
 - [feedr](https://github.com/bahdotsh/feedr) is a feature-rich terminal-based RSS feed reader written in Rust
 - [russ](https://github.com/ckampfe/russ)  is a TUI RSS/Atom reader with vim-like controls and a local-first, offline-first focus.
 - [elfeed](https://github.com/skeeto/elfeed) provides RSS in emacs
-- [tuifeed](https://github.com/veeso/tuifeed), a terminal news feed reader with a fancy ui 
+- [tuifeed](https://github.com/veeso/tuifeed), a terminal news feed reader with a fancy ui
+- [brochure](https://github.com/Sylviromi/brochure), a terminal RSS reader: keyboard-driven, distraction-free.
 
 ---
 
