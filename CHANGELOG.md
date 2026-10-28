@@ -1,9 +1,12 @@
 # Unreleased
 
-- when *eilmeldung* detects multiple feed sources when adding a feed, it shows a selection popup
-- update to `news-flash 4.0.1` 
+ *eilmeldung* has now been over one year in development! 🎂 Thanks for all your trust, contributions and feedback!
+
+Here are some news:
+- *eilmeldung* has migrated to `news-flash 4.0.1`!
   - with many thanks and cheers to @jangernert for all the work he puts into maintaining news-flash, which makes *eilmeldung* possible
   - and because of @jangernert's great work, *eilmeldung* now has **no** external dependencies anymore!🎉 just pure rust 🦀 (except for `libc` of course 😉)
+- when *eilmeldung* detects multiple feed sources when adding a feed, it shows a selection popup
 
 
 # 1.9.1 - 2026-10-20

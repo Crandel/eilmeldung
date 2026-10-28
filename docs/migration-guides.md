@@ -8,6 +8,7 @@ Here you can find migration guides for breaking changes.
 ## With 1.10.0
 
 - *eilmeldung* now has no external dependencies anymore, i.e., it can be compiled with the standard rust toolchain without `libxml`, `sqlite3`, `openssl` dependencies or any build dependencies like `llvm` or `perl`
+- with this, compilation on Windows is significantly easier and the installation and compilation scripts have been removed
 
 ## With 1.9.0
 - with complete rewrite of mouse support, setting `mouse_support` is now deprecated, use `mouse_config.enable` instead (default is `true`)
