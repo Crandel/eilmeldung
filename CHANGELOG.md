@@ -1,5 +1,7 @@
 # Unreleased
 
+# 1.10.0 - 2026-10-28
+
  *eilmeldung* has now been over one year in development! 🎂 Thanks for all your trust, contributions and feedback!
 
 Here are some news:
